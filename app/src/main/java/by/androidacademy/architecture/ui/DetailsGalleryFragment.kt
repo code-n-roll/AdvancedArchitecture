@@ -50,9 +50,19 @@ class DetailsGalleryFragment : Fragment(R.layout.fragment_movies_gallery) {
                 currentItem = position
             }
         })
+
         viewModel.errorLiveData.observe(viewLifecycleOwner, Observer { message ->
             Toast.makeText(requireContext(), message, Toast.LENGTH_LONG).show()
         })
+
+        // TODO: fix behavior with FragmentStatePagerAdapter
+//        viewModel.movieRatingLiveData.observe(viewLifecycleOwner, Observer { (position, rating) ->
+//            (vp_pager.adapter as DetailsFragmentAdapter).run {
+//                getItem(vp_pager.currentItem).view?.findViewById<RatingBar>(R.id.viewRating)?.let {
+//                    it.rating = rating
+//                }
+//            }
+//        })
     }
 
     override fun onSaveInstanceState(outState: Bundle) {

@@ -6,6 +6,8 @@ import by.androidacademy.architecture.domain.model.Movie
 interface RateMovieUseCase {
 
     fun rate(movie: Movie, rating: Float)
+
+    fun getRating(movieId: Int): Float
 }
 
 class RateMovieUseCaseImpl(
@@ -14,5 +16,9 @@ class RateMovieUseCaseImpl(
 
     override fun rate(movie: Movie, rating: Float) {
         moviesRepository.setMovieRating(movie.id, rating)
+    }
+
+    override fun getRating(movieId: Int): Float {
+        return moviesRepository.getMovieRating(movieId)
     }
 }

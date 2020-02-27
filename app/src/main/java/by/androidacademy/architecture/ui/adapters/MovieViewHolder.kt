@@ -19,4 +19,8 @@ class MovieViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
             setOnClickListener { onClick() }
         }
     }
+
+    fun setRating(rating: Float) {
+        itemView.viewRating.rating = rating
+    }
 }

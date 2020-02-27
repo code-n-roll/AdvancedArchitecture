@@ -16,6 +16,11 @@ class MoviesAdapter(private val clickListener: (itemPosition: Int) -> Unit) :
         notifyDataSetChanged()
     }
 
+    fun setRating(position: Int, rating: Float) {
+        this.movies[position].rating = rating
+        notifyItemChanged(position, rating)
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MovieViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_movie, parent, false)
         return MovieViewHolder(view)
@@ -24,6 +29,19 @@ class MoviesAdapter(private val clickListener: (itemPosition: Int) -> Unit) :
     override fun onBindViewHolder(holder: MovieViewHolder, position: Int) {
         holder.bind(movies[position]) {
             clickListener(position)
+        }
+    }
+
+    override fun onBindViewHolder(
+        holder: MovieViewHolder,
+        position: Int,
+        payloads: MutableList<Any>
+    ) {
+        when {
+            payloads.isEmpty() -> holder.bind(movies[position]) {
+                clickListener(position)
+            }
+            else -> holder.setRating(payloads[0] as Float)
         }
     }
 

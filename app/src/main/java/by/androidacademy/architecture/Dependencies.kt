@@ -18,7 +18,7 @@ object Dependencies {
 
     // Presentation
     val moviesViewModelFactory by lazy {
-        createMoviesViewModelFactory(getPopularMoviesUseCase, getMoviesByQueryUseCase)
+        createMoviesViewModelFactory(getPopularMoviesUseCase, getMoviesByQueryUseCase, rateMovieUseCase)
     }
 
     fun createMovieDetailsViewModelFactory(movie: Movie): MovieDetailsViewModelFactory {
@@ -62,9 +62,10 @@ object Dependencies {
     // Impls
     private fun createMoviesViewModelFactory(
         getPopularMoviesUseCase: GetPopularMoviesUseCase,
-        getMoviesByQueryUseCase: GetMoviesByQueryUseCase
+        getMoviesByQueryUseCase: GetMoviesByQueryUseCase,
+        rateMovieUseCase: RateMovieUseCase
     ): MoviesViewModelFactory {
-        return MoviesViewModelFactory(getPopularMoviesUseCase, getMoviesByQueryUseCase)
+        return MoviesViewModelFactory(getPopularMoviesUseCase, getMoviesByQueryUseCase, rateMovieUseCase)
     }
 
     private fun createGetPopularMoviesUseCase(moviesRepository: MoviesRepository): GetPopularMoviesUseCase {

@@ -10,7 +10,7 @@ data class Movie(
     val releaseDate: String,
     val posterUrl: String,
     val backdropUrl: String,
-    val rating: Float
+    var rating: Float
 ) : Parcelable {
 
     constructor(source: Parcel) : this(

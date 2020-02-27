@@ -45,8 +45,13 @@ class MoviesActivity : AppCompatActivity() {
             hideProgress()
             adapter.setMovies(movies)
         })
+
         viewModel.errorLiveData.observe(this, Observer { message ->
             Toast.makeText(applicationContext, message, Toast.LENGTH_LONG).show()
+        })
+
+        viewModel.movieRatingLiveData.observe(this, Observer { (position, rating) ->
+            adapter.setRating(position, rating)
         })
     }
 

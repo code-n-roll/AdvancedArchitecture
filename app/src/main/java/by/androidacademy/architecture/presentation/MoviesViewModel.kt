@@ -7,10 +7,12 @@ import by.androidacademy.architecture.domain.model.Movie
 import by.androidacademy.architecture.domain.usecase.GetMoviesByQueryUseCase
 import by.androidacademy.architecture.domain.usecase.GetMoviesResult
 import by.androidacademy.architecture.domain.usecase.GetPopularMoviesUseCase
+import by.androidacademy.architecture.domain.usecase.RateMovieUseCase
 
 class MoviesViewModel(
     private val getPopularMoviesUseCase: GetPopularMoviesUseCase,
-    private val getMoviesByQueryUseCase: GetMoviesByQueryUseCase
+    private val getMoviesByQueryUseCase: GetMoviesByQueryUseCase,
+    private val rateMovieUseCase: RateMovieUseCase
 ) : ViewModel() {
 
     private val _moviesLiveData = MutableLiveData<List<Movie>>()
@@ -19,11 +21,14 @@ class MoviesViewModel(
     private val _errorLiveData = MutableLiveData<String>()
     val errorLiveData: LiveData<String> = _errorLiveData
 
+    private val _movieRatingLiveData = MutableLiveData<Pair<Int, Float>>()
+    val movieRatingLiveData: LiveData<Pair<Int, Float>> = _movieRatingLiveData
+
     init {
         loadPopularMovies()
     }
 
-    private fun loadPopularMovies() {
+    fun loadPopularMovies() {
         getPopularMoviesUseCase.getMovies { result ->
             when (result) {
                 is GetMoviesResult.Success -> {
@@ -46,6 +51,12 @@ class MoviesViewModel(
                     _errorLiveData.postValue(result.message)
                 }
             }
+        }
+    }
+
+    fun updateRating(position: Int, movieId: Int) {
+        rateMovieUseCase.getRating(movieId).let {
+            _movieRatingLiveData.postValue(Pair(position, it))
         }
     }
 }

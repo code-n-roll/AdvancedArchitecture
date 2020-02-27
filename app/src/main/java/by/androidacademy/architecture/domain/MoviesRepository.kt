@@ -12,6 +12,8 @@ interface MoviesRepository {
     fun getMovieTrailer(movieId: Int, callback: (MovieVideo?) -> Unit)
 
     fun setMovieRating(movieId: Int, rating: Float)
+
+    fun getMovieRating(movieId: Int): Float
 }
 
 interface RepositoryCallback {

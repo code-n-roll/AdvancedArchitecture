@@ -24,6 +24,9 @@ class MovieDetailsViewModel(
     private val _errorLiveData = MutableLiveData<String>()
     val errorLiveData: LiveData<String> = _errorLiveData
 
+    private val _movieRatingLiveData = MutableLiveData<Float>()
+    val movieRatingLiveData: LiveData<Float> = _movieRatingLiveData
+
     init {
         _movieLivaData.postValue(movie)
     }
@@ -43,5 +46,6 @@ class MovieDetailsViewModel(
 
     fun rate(rating: Float) {
         rateMovieUseCase.rate(movie, rating)
+        _movieRatingLiveData.postValue(rating)
     }
 }

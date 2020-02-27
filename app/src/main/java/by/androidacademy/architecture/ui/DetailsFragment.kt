@@ -13,6 +13,7 @@ import by.androidacademy.architecture.Dependencies
 import by.androidacademy.architecture.R
 import by.androidacademy.architecture.domain.model.Movie
 import by.androidacademy.architecture.presentation.MovieDetailsViewModel
+import by.androidacademy.architecture.presentation.MoviesViewModel
 import by.androidacademy.architecture.ui.formatters.MovieDescriptionFormatter
 import coil.api.load
 import kotlinx.android.synthetic.main.fragment_movie_details.*
@@ -22,27 +23,41 @@ class DetailsFragment : Fragment(R.layout.fragment_movie_details) {
     companion object {
 
         private const val ARG_MOVIE = "arg.movie"
+        private const val ARG_MOVIE_POSITION = "arg.movie.position"
 
-        fun newInstance(movie: Movie): DetailsFragment {
+        fun newInstance(movie: Movie, position: Int): DetailsFragment {
             return DetailsFragment().apply {
-                arguments = bundleOf(ARG_MOVIE to movie)
+                arguments = bundleOf(
+                    ARG_MOVIE to movie,
+                    ARG_MOVIE_POSITION to position
+                )
             }
         }
     }
 
     private lateinit var viewModel: MovieDetailsViewModel
+    private lateinit var moviesViewModel: MoviesViewModel
 
     private val descriptionFormatter = MovieDescriptionFormatter()
+
+    private var moviePosition: Int = 0
+
+    private lateinit var movie: Movie
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val movie: Movie = arguments?.getParcelable(ARG_MOVIE)
+        movie = arguments?.getParcelable(ARG_MOVIE)
+            ?: throw IllegalArgumentException("missing argument!")
+        moviePosition = arguments?.getInt(ARG_MOVIE_POSITION)
             ?: throw IllegalArgumentException("missing argument!")
 
         val viewModelFactory = Dependencies.createMovieDetailsViewModelFactory(movie)
+        val moviesViewModelFactory = Dependencies.moviesViewModelFactory
         viewModel = ViewModelProvider(this, viewModelFactory)
             .get(MovieDetailsViewModel::class.java)
+        moviesViewModel = ViewModelProvider(activity as MoviesActivity, moviesViewModelFactory)
+            .get(MoviesViewModel::class.java)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -56,6 +71,7 @@ class DetailsFragment : Fragment(R.layout.fragment_movie_details) {
         viewRating.setOnRatingBarChangeListener { ratingBar, rating, fromUser ->
             if (fromUser) {
                 viewModel.rate(rating)
+                moviesViewModel.updateRating(moviePosition, movie.id)
             }
         }
     }
@@ -76,6 +92,9 @@ class DetailsFragment : Fragment(R.layout.fragment_movie_details) {
         })
         viewModel.errorLiveData.observe(viewLifecycleOwner, Observer { message ->
             Toast.makeText(requireContext(), message, Toast.LENGTH_LONG).show()
+        })
+        viewModel.movieRatingLiveData.observe(viewLifecycleOwner, Observer { rating ->
+            viewRating.rating = rating
         })
     }
 
